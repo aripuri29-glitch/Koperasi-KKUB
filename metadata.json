@@ -1,0 +1,6 @@
+{
+  "name": "KKUB Kantor Pusat - Sistem Koperasi Simpan Pinjam",
+  "description": "Aplikasi manajemen Koperasi Simpan Pinjam lengkap dengan perhitungan bunga, pencatatan cicilan, laporan bulanan otomatis, notifikasi WhatsApp, dan autentikasi 2FA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

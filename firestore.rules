@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email != null &&
+        request.auth.token.email.lower() == 'aripuri29@gmail.com'
+      );
+    }
+
+    // Default deny for unknown documents
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Cooperative profile and operational settings
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Members collection
+    match /members/{memberId} {
+      allow read, write: if true;
+    }
+
+    // Loans collection
+    match /loans/{loanId} {
+      allow read, write: if true;
+    }
+
+    // Installments collection
+    match /installments/{installmentId} {
+      allow read, write: if true;
+    }
+
+    // Savings collection
+    match /savings/{savingId} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "Data anggota atau nasabah Koperasi Simpan Pinjam",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "memberNumber": { "type": "string", "maxLength": 64 },
+        "name": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "address": { "type": "string", "maxLength": 256 },
+        "nik": { "type": "string", "maxLength": 32 },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "role": { "type": "string", "enum": ["admin", "nasabah"] },
+        "savingsBalance": { "type": "number" },
+        "twoFactorEnabled": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["memberNumber", "name", "phone", "role"]
+    },
+    "Loan": {
+      "title": "Loan",
+      "description": "Pengajuan dan catatan pinjaman anggota koperasi",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "loanNumber": { "type": "string", "maxLength": 64 },
+        "memberId": { "type": "string", "maxLength": 128 },
+        "memberName": { "type": "string", "maxLength": 128 },
+        "memberPhone": { "type": "string", "maxLength": 32 },
+        "principalAmount": { "type": "number" },
+        "interestRateAnnual": { "type": "number" },
+        "interestType": { "type": "string", "enum": ["flat", "efektif", "anuitas"] },
+        "tenorMonths": { "type": "number" },
+        "monthlyInstallment": { "type": "number" },
+        "totalInterest": { "type": "number" },
+        "totalRepayment": { "type": "number" },
+        "remainingPrincipal": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "active", "completed", "rejected"] },
+        "disbursedAt": { "type": "string" },
+        "purpose": { "type": "string", "maxLength": 256 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["loanNumber", "memberId", "principalAmount", "interestType", "tenorMonths", "status"]
+    },
+    "Installment": {
+      "title": "Installment",
+      "description": "Rincian jadwal dan rekaman cicilan pinjaman",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "loanId": { "type": "string", "maxLength": 128 },
+        "installmentNumber": { "type": "number" },
+        "dueDate": { "type": "string" },
+        "principalAmount": { "type": "number" },
+        "interestAmount": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "remainingBalance": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "paid", "overdue"] },
+        "paidAt": { "type": "string" },
+        "paidAmount": { "type": "number" },
+        "lateFee": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 64 },
+        "receiptNumber": { "type": "string", "maxLength": 64 },
+        "notes": { "type": "string", "maxLength": 256 },
+        "reminderSentAt": { "type": "string" }
+      },
+      "required": ["loanId", "installmentNumber", "dueDate", "totalAmount", "status"]
+    },
+    "Saving": {
+      "title": "Saving",
+      "description": "Pencatatan transaksi simpanan anggota (Pokok, Wajib, Sukarela)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "memberId": { "type": "string", "maxLength": 128 },
+        "memberName": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["pokok", "wajib", "sukarela"] },
+        "amount": { "type": "number" },
+        "transactionType": { "type": "string", "enum": ["deposit", "withdrawal"] },
+        "date": { "type": "string" },
+        "description": { "type": "string", "maxLength": 256 },
+        "balanceAfter": { "type": "number" }
+      },
+      "required": ["memberId", "type", "amount", "transactionType", "date"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Pengaturan informasi koperasi dan template WhatsApp",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "cooperativeName": { "type": "string", "maxLength": 128 },
+        "cooperativeAddress": { "type": "string", "maxLength": 256 },
+        "cooperativePhone": { "type": "string", "maxLength": 32 },
+        "defaultInterestType": { "type": "string", "enum": ["flat", "efektif", "anuitas"] },
+        "defaultInterestRate": { "type": "number" },
+        "bankName": { "type": "string", "maxLength": 64 },
+        "bankAccountNumber": { "type": "string", "maxLength": 64 },
+        "bankAccountName": { "type": "string", "maxLength": 128 },
+        "waTemplateReminder": { "type": "string", "maxLength": 1024 }
+      },
+      "required": ["cooperativeName"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Koleksi data anggota dan profil nasabah koperasi"
+    },
+    "/loans/{loanId}": {
+      "schema": { "$ref": "#/entities/Loan" },
+      "description": "Koleksi kontrak pinjaman dan status kredit"
+    },
+    "/installments/{installmentId}": {
+      "schema": { "$ref": "#/entities/Installment" },
+      "description": "Koleksi data cicilan dan histori pembayaran nasabah"
+    },
+    "/savings/{savingId}": {
+      "schema": { "$ref": "#/entities/Saving" },
+      "description": "Koleksi riwayat transaksi simpanan anggota"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/Setting" },
+      "description": "Koleksi konfigurasi operasional koperasi dan pesan WA"
+    }
+  }
+}
